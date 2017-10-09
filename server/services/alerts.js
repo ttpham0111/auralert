@@ -1,5 +1,10 @@
 var Alert = require('../models/alert');
+var configs = require('./configs');
 
+const client = require('twilio')(
+  configs.twilioAccountSID,
+  configs.twilioAuthToken
+);
 
 function list(callback) {
   // Implement
@@ -25,7 +30,17 @@ function respond(volume, callback) {
 
 
 function sendNotifications(notify) {
-  // Implement
+  client.messages.create({
+      to: "insert_your_mobile_number",
+      from: configs.twilioPhoneNumber,
+      body: notify
+    }, function(err, message) {
+      if(err){
+        console.log(err);
+      } else {
+        console.log(message.sid);
+      }
+    });
 }
 
 
