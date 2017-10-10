@@ -23,7 +23,7 @@ def run(filename, port, server_url):
 
       response = requests.post(server_url, json={'volume': volume})
       response.raise_for_status()
-      print 'Response:', response
+      print 'Response:', response.content
     except Exception as e:
       print e
 

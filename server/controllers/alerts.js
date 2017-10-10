@@ -13,9 +13,16 @@ exports.list = function(request, response) {
 
 exports.create = function(request, response) {
   var data = {
+    id: request.data.threshold,
     threshold: request.data.threshold,
-    notify: request.data.notify
+    notify: request.data.notify,
+    message: request.data.message,
+    cooldown: request.data.cooldown
   };
+
+  if (!data.id) {
+    return response.status(400).json({ error: 'The id field is required.'});
+  }
 
   if (!data.threshold) {
     return response.status(400).json({ error: 'The threshold field is required.'});

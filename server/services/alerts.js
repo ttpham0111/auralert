@@ -1,18 +1,19 @@
-var Alert = require('../models/alert');
-var configs = require('./configs');
+var AlertCollection = require('../models/alert');
+var config = require('../config');
 
-const client = require('twilio')(
-  configs.twilioAccountSID,
-  configs.twilioAuthToken
+var client = require('twilio')(
+  config.twilioAccountSID,
+  config.twilioAuthToken
 );
 
 function list(callback) {
-  // Implement
+  callback(null, AlertCollection.list());
 }
 
 
 function create(data, callback) {
-  // Implement
+  var alert = AlertCollection.create(data.id, data.threshold, data.notify, data.message, data.cooldown);
+  callback(null, alert);
 }
 
 
@@ -20,27 +21,40 @@ function respond(volume, callback) {
   list(function(error, alerts) {
     if (error) return callback(error);
 
-    alerts.forEach(function(alert) {
-      if (volume > alert.threshold) {
-        sendNotifications(alert.notify);  // TODO: This should either use promises or wait for all to complete.
-      }
+    var now = new Date();
+    var promises = alerts.map(function(alert) {
+      return new Promise(function(resolve, reject) {
+        if (volume < alert.threshold) return resolve();
+
+        var timedelta = now - alert.last_notify_time;
+        var cooldown = alert.cooldown || config.notify_cooldown;
+        if (timedelta > cooldown) {
+          var message = alert.message || 'Alarm triggered for device ' + alert.id;
+          sendNotifications(notify, message, function(error) {
+            alert.last_notify_time = new Date();
+            if (error) return reject(error);
+            else resolve();
+          });
+        } else resolve();
+      });
     });
+
+    Promise.all(promises)
+      .then(callback)
+      .catch(callback);
   });
 }
 
 
-function sendNotifications(notify) {
+function sendNotifications(notify, message, callback) {
   client.messages.create({
-      to: "insert_your_mobile_number",
-      from: configs.twilioPhoneNumber,
-      body: notify
-    }, function(err, message) {
-      if(err){
-        console.log(err);
-      } else {
-        console.log(message.sid);
-      }
-    });
+    to: notify,
+    from: config.twilioPhoneNumber,
+    body: message,
+  }, function(error, message) {
+    if (error) return callback(error);
+    callback(null, message);
+  });
 }
 
 

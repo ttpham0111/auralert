@@ -1,7 +1,7 @@
 var app = require('./app');
-var configs = require('./configs');
+var config = require('./config');
 
 
-var server = app.listen(configs.port, function() {
-  console.log('Listening on port ' + configs.port);
+var server = app.listen(config.port, function() {
+  console.log('Listening on port ' + config.port);
 });
