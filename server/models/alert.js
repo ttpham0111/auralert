@@ -9,11 +9,6 @@ function list() {
 }
 
 
-function get(id) {
-  return cache.get(id);
-}
-
-
 function create(id, threshold, notify, message, cooldown) {
   var alert = {
     id: id,
@@ -24,7 +19,7 @@ function create(id, threshold, notify, message, cooldown) {
     last_notify_time: 0
   };
 
-  cache.set(id, alert);
+  cache.set(id + '_' + threshold, alert);
   return alert;
 }
 

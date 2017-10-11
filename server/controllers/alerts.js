@@ -13,11 +13,11 @@ exports.list = function(request, response) {
 
 exports.create = function(request, response) {
   var data = {
-    id: request.data.threshold,
-    threshold: request.data.threshold,
-    notify: request.data.notify,
-    message: request.data.message,
-    cooldown: request.data.cooldown
+    id: request.body.threshold,
+    threshold: request.body.threshold,
+    notify: request.body.notify,
+    message: request.body.message,
+    cooldown: request.body.cooldown
   };
 
   if (!data.id) {

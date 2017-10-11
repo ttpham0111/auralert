@@ -10,6 +10,6 @@ var AlertsController = require('./controllers/alerts');
 router.post('/sensors/volume', SensorsController.listen);
 
 router.get('/alerts', AlertsController.list);
-router.post('/alerts/create', AlertsController.create);
+router.post('/alerts', AlertsController.create);
 
 module.exports = router;
