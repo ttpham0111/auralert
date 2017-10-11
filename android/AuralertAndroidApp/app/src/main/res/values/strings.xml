@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Auralert</string>
+    <string name="phone">Phone</string>
+    <string name="device_id">Device ID</string>
+    <string name="register">Register</string>
+    <string name="msg">Message</string>
+    <string name="threshold">Threshold</string>
+    <string name="low">Low</string>
+    <string name="high">High</string>
+    <string name="registration_in_progress">Registration in progress&#8230;</string>
+    <string name="registration_sucessful">Registration successful!</string>
+</resources>
