@@ -18,10 +18,14 @@ def run(filename, port, server_url):
   arduino = Serial(filename, port)
   while True:
     try:
-      volume = int(arduino.readline().strip())
-      print 'Received:', volume
+      device_id, volume = arduino.readline().split()
+      print 'Received volume {} from device {}'.format(volume, device_id)
 
-      response = requests.post(server_url, json={'volume': volume})
+      data = {
+        'deviceId': device_id,
+        'volume': int(volume)
+      }
+      response = requests.post(server_url, json=data)
       response.raise_for_status()
       print 'Response:', response.content
     except Exception as e:
