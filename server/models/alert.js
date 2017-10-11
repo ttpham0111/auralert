@@ -5,7 +5,15 @@ var cache = new LRU(1000);
 
 
 function list() {
-  return cache.values();
+  return cache.values().map(function(alert) {
+    return {
+      id: alert.id,
+      threshold: alert.threshold,
+      message: alert.message,
+      cooldown: alert.cooldown,
+      last_notify_time: alert.last_notify_time
+    };
+  });
 }
 
 
@@ -20,7 +28,13 @@ function create(id, threshold, notify, message, cooldown) {
   };
 
   cache.set(id + '_' + threshold, alert);
-  return alert;
+  return {
+    id: alert.id,
+    threshold: alert.threshold,
+    message: alert.message,
+    cooldown: alert.cooldown,
+    last_notify_time: alert.last_notify_time
+  };
 }
 
 module.exports = {
