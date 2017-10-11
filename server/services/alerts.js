@@ -30,7 +30,7 @@ function respond(volume, callback) {
         var cooldown = alert.cooldown || config.notify_cooldown;
         if (timedelta > cooldown) {
           var message = alert.message || 'Alarm triggered for device ' + alert.id;
-          sendNotifications(notify, message, function(error) {
+          sendNotifications(alert.notify, message, function(error) {
             alert.last_notify_time = new Date();
             if (error) return reject(error);
             else resolve();
@@ -40,7 +40,9 @@ function respond(volume, callback) {
     });
 
     Promise.all(promises)
-      .then(callback)
+      .then(function() {
+        callback();
+      })
       .catch(callback);
   });
 }
