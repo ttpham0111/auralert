@@ -17,34 +17,32 @@ function create(data, callback) {
 }
 
 
-function respond(volume, callback) {
-  list(function(error, alerts) {
-    if (error) return callback(error);
+function respond(deviceId, volume, callback) {
+  var alerts = AlertCollection.get(deviceId);
+  var now = new Date();
+  var promises = alerts.map(function(alert) {
+    return new Promise(function(resolve, reject) {
+      if (volume < alert.threshold) return resolve();
 
-    var now = new Date();
-    var promises = alerts.map(function(alert) {
-      return new Promise(function(resolve, reject) {
-        if (volume < alert.threshold) return resolve();
+      var timedelta = now - alert.last_notify_time;
+      var cooldown = alert.cooldown || config.notify_cooldown;
+      if (timedelta > cooldown) {
+        var message = alert.message || 'Alarm triggered for device ' + alert.id;
+        sendNotifications(alert.notify, message, function(error) {
+          if (error) return reject(error);
 
-        var timedelta = now - alert.last_notify_time;
-        var cooldown = alert.cooldown || config.notify_cooldown;
-        if (timedelta > cooldown) {
-          var message = alert.message || 'Alarm triggered for device ' + alert.id;
-          sendNotifications(alert.notify, message, function(error) {
-            alert.last_notify_time = new Date();
-            if (error) return reject(error);
-            else resolve();
-          });
-        } else resolve();
-      });
+          alert.last_notify_time = new Date();
+          resolve();
+        });
+      } else resolve();
     });
-
-    Promise.all(promises)
-      .then(function() {
-        callback();
-      })
-      .catch(callback);
   });
+
+  Promise.all(promises)
+    .then(function() {
+      callback();
+    })
+    .catch(callback);
 }
 
 
