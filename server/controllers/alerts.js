@@ -13,7 +13,7 @@ exports.list = function(request, response) {
 
 exports.create = function(request, response) {
   var data = {
-    id: request.body.threshold,
+    id: request.body.id,
     threshold: request.body.threshold,
     notify: request.body.notify,
     message: request.body.message,
