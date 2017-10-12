@@ -9,7 +9,7 @@ exports.listen = function(request, response) {
     return response.status(400).json({ error: 'The deviceId field is required.'});
   }
 
-  if (!volume) {
+  if (!volume && volume !== 0) {
     return response.status(400).json({ error: 'The volume field is required.'});
   }
 
