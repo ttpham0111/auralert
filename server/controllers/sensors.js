@@ -13,7 +13,7 @@ exports.listen = function(request, response) {
     return response.status(400).json({ error: 'The volume field is required.'});
   }
 
-  console.log('Received volume ' + volume + ' from device ' + deviceId);
+  console.log('Received volume ' + volume + ' from Device ' + deviceId);
 
   AlertsService.respond(deviceId, volume, function(error) {
     if (error) {
